@@ -6,15 +6,15 @@ DEEPX NPU가 장착된 ROS 2 시스템에서 연속된 두 영상 프레임 사�
 
 ## 1. 기능 정의
 
-두 프레임 (I_{t-1}), (I_t)가 주어졌을 때 각 픽셀 ((x,y))의 2차원 이동을 추정합니다.
+두 프레임 \(I_{t-1}\), \(I_t\)가 주어졌을 때 각 픽셀 \((x,y)\)의 2차원 이동을 추정합니다.
 
-[
-mathbf{F}_t(x,y)=[u_t(x,y),v_t(x,y)]
-]
+$
+\mathbf{F}_t(x,y)=[u_t(x,y),v_t(x,y)]
+$
 
-[
-I_t(x+u_t,y+v_t)approx I_{t-1}(x,y)
-]
+$
+I_t(x+u_t,y+v_t)\approx I_{t-1}(x,y)
+$
 
 핵심 기능:
 
@@ -229,20 +229,20 @@ stateDiagram-v2
 
 ### 해상도 복원
 
-모델 입력이 (W_m 	imes H_m), 원본이 (W_o 	imes H_o)이면 upsample 후 vector 크기도 보정합니다.
+모델 입력이 \(W_m \times H_m\), 원본이 \(W_o \times H_o\)이면 upsample 후 vector 크기도 보정합니다.
 
-[
-u_o=u_mrac{W_o}{W_m},qquad
-v_o=v_mrac{H_o}{H_m}
-]
+$
+u_o=u_m\frac{W_o}{W_m},\qquad
+v_o=v_m\frac{H_o}{H_m}
+$
 
-flow map만 resize하고 (u,v) 크기를 보정하지 않으면 이동량이 잘못됩니다.
+flow map만 resize하고 \(u,v\) 크기를 보정하지 않으면 이동량이 잘못됩니다.
 
 ### Frame gap
 
 - (Delta t leq Delta t_{max})인 pair만 추론
 - output은 기본적으로 pixel/frame
-- pixel/second가 필요하면 ((u/Delta t,v/Delta t))를 별도 topic 또는 parameter로 명확히 구분
+- pixel/second가 필요하면 \((u/\Delta t,v/\Delta t)\)를 별도 topic 또는 parameter로 명확히 구분
 - timestamp 역전, duplicate, 큰 gap이면 history reset
 
 ### Backpressure
