@@ -2,7 +2,7 @@
 
 DEEPX NPU가 장착된 ROS 2 시스템에서 연속된 두 영상 프레임 사이의 픽셀 이동을 추정하는 **Optical Flow 라이브러리 구성 초안**이다. Isaac ROS의 영상 전처리·NITROS 그래프와 연결하고, 학습 기반 optical-flow 모델의 추론을 DXNN/DX-Runtime으로 DEEPX NPU에서 실행하는 것을 목표로 한다.
 
-> **현재 상태:** 아래 내용은 구현 대상 아키텍처와 ROS 인터페이스 정의이다. 실제 노드, `.dxnn` 모델과 성능 수치가 이미 구현·검증되었다는 의미는 아니다.
+> **현재 상태:** 아래 내용은 구현 대상 아키텍처와 ROS 인터페이스 정의이다. 
 
 ## 1. 기능 정의
 
@@ -28,9 +28,9 @@ $$
 - NPU timeout, frame drop, resolution change에 대한 reset/fallback
 - EPE, angular error, FPS, end-to-end latency 및 전력 측정
 
-## 2. 기존 Isaac ROS에서 무엇을 기반으로 하는가
+## 2. 기존 Isaac ROS (DX_Newton)에서 무엇을 기반으로 하는가
 
-현재 Isaac ROS에는 범용 DEEPX optical-flow 노드가 없으므로 하나의 패키지를 그대로 복제하기보다 다음 구성요소를 조합한다.
+다음 구성요소를 조합한다.
 
 | 기반 패키지/기술 | 재사용/참조할 부분 | DX-NEWTON-OptFlow에서의 역할 |
 |---|---|---|
@@ -79,7 +79,7 @@ Output
 
 ## 4. 중요한 메모리 설계
 
-NITROS는 NVIDIA CUDA 메모리 그래프에 최적화되어 있지만 DEEPX NPU buffer와 자동 zero-copy가 되는 것은 아니다.
+NITROS (zero-copy) 에 기반하여 설계한다.
 
 ### 1차 구현
 
