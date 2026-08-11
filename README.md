@@ -8,13 +8,13 @@ DEEPX NPU가 장착된 ROS 2 시스템에서 연속된 두 영상 프레임 사�
 
 두 프레임 \(I_{t-1}\), \(I_t\)가 주어졌을 때 각 픽셀 \((x,y)\)의 2차원 이동을 추정합니다.
 
-$
+$$
 \mathbf{F}_t(x,y)=[u_t(x,y),v_t(x,y)]
-$
+$$
 
-$
+$$
 I_t(x+u_t,y+v_t)\approx I_{t-1}(x,y)
-$
+$$
 
 핵심 기능:
 
@@ -231,10 +231,10 @@ stateDiagram-v2
 
 모델 입력이 \(W_m \times H_m\), 원본이 \(W_o \times H_o\)이면 upsample 후 vector 크기도 보정합니다.
 
-$
+$$
 u_o=u_m\frac{W_o}{W_m},\qquad
 v_o=v_m\frac{H_o}{H_m}
-$
+$$
 
 flow map만 resize하고 \(u,v\) 크기를 보정하지 않으면 이동량이 잘못됩니다.
 
