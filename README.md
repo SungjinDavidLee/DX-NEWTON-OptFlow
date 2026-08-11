@@ -48,7 +48,7 @@ $$
 - `DXNN_DENSE`: DEEPX NPU learned dense flow
 - `DXNN_SPARSE`: DEEPX NPU learned keypoint/descriptor + CPU matching 또는 learned sparse flow
 
-DEEPX NPU의 핵심 대상은 `DXNN_DENSE` 또는 학습 기반 front-end이다. OpenCV/VPI는 정확도·지연 fallback과 baseline으로 둡니다.
+DEEPX NPU의 핵심 대상은 `DXNN_DENSE` 또는 학습 기반 front-end이다. OpenCV/VPI는 정확도·지연 fallback과 baseline으로 둔다.
 
 ## 3. NPU 모델 요구사항
 
