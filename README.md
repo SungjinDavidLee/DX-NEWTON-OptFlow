@@ -1,12 +1,12 @@
 # DX-NEWTON-OptFlow
 
-DEEPX NPU가 장착된 ROS 2 시스템에서 연속된 두 영상 프레임 사이의 픽셀 이동을 추정하는 **Optical Flow 라이브러리 제안서**입니다. Isaac ROS의 영상 전처리·NITROS 그래프와 연결하고, 학습 기반 optical-flow 모델의 추론을 DXNN/DX-Runtime으로 DEEPX NPU에서 실행하는 것을 목표로 합니다.
+DEEPX NPU가 장착된 ROS 2 시스템에서 연속된 두 영상 프레임 사이의 픽셀 이동을 추정하는 **Optical Flow 라이브러리 구성 초안**이다. Isaac ROS의 영상 전처리·NITROS 그래프와 연결하고, 학습 기반 optical-flow 모델의 추론을 DXNN/DX-Runtime으로 DEEPX NPU에서 실행하는 것을 목표로 한다.
 
-> **현재 상태:** 아래 내용은 구현 대상 아키텍처와 ROS 인터페이스 정의입니다. 실제 노드, `.dxnn` 모델과 성능 수치가 이미 구현·검증되었다는 의미는 아닙니다.
+> **현재 상태:** 아래 내용은 구현 대상 아키텍처와 ROS 인터페이스 정의이다. 실제 노드, `.dxnn` 모델과 성능 수치가 이미 구현·검증되었다는 의미는 아니다.
 
 ## 1. 기능 정의
 
-두 프레임 \(I_{t-1}\), \(I_t\)가 주어졌을 때 각 픽셀 \((x,y)\)의 2차원 이동을 추정합니다.
+두 프레임 \(I_{t-1}\), \(I_t\)가 주어졌을 때 각 픽셀 \((x,y)\)의 2차원 이동을 추정한다.
 
 $$
 \mathbf{F}_t(x,y)=[u_t(x,y),v_t(x,y)]
@@ -30,7 +30,7 @@ $$
 
 ## 2. 기존 Isaac ROS에서 무엇을 기반으로 하는가
 
-현재 Isaac ROS에는 범용 DEEPX optical-flow 노드가 없으므로 하나의 패키지를 그대로 복제하기보다 다음 구성요소를 조합합니다.
+현재 Isaac ROS에는 범용 DEEPX optical-flow 노드가 없으므로 하나의 패키지를 그대로 복제하기보다 다음 구성요소를 조합한다.
 
 | 기반 패키지/기술 | 재사용/참조할 부분 | DX-NEWTON-OptFlow에서의 역할 |
 |---|---|---|
@@ -48,7 +48,7 @@ $$
 - `DXNN_DENSE`: DEEPX NPU learned dense flow
 - `DXNN_SPARSE`: DEEPX NPU learned keypoint/descriptor + CPU matching 또는 learned sparse flow
 
-DEEPX NPU의 핵심 대상은 `DXNN_DENSE` 또는 학습 기반 front-end입니다. OpenCV/VPI는 정확도·지연 fallback과 baseline으로 둡니다.
+DEEPX NPU의 핵심 대상은 `DXNN_DENSE` 또는 학습 기반 front-end이다. OpenCV/VPI는 정확도·지연 fallback과 baseline으로 둡니다.
 
 ## 3. NPU 모델 요구사항
 
@@ -66,7 +66,7 @@ Output
   occlusion:  [1, 1, H', W']  (optional)
 ```
 
-모델 후보는 RAFT-Small, PWC-Net 계열, FastFlowNet류의 경량 모델이지만, 특정 모델이 DXNN에서 지원된다고 선결론 내리면 안 됩니다. 다음을 먼저 통과해야 합니다.
+모델 후보는 RAFT-Small, PWC-Net 계열, FastFlowNet류의 경량 모델이지만, 특정 모델이 DXNN에서 지원된다고 선결론 내리면 안 된다. 다음을 먼저 통과해야 한다.
 
 1. ONNX export의 static/dynamic shape 정책 확인
 2. DX-Compiler operator support 확인
@@ -75,11 +75,11 @@ Output
 5. FP32 ONNX 대비 EPE와 outlier degradation 검증
 6. target resolution에서 latency와 memory 측정
 
-지원되지 않는 연산은 network 구조 변경, host post-processing 또는 대체 모델로 해결합니다.
+지원되지 않는 연산은 network 구조 변경, host post-processing 또는 대체 모델로 해결한다.
 
 ## 4. 중요한 메모리 설계
 
-NITROS는 NVIDIA CUDA 메모리 그래프에 최적화되어 있지만 DEEPX NPU buffer와 자동 zero-copy가 되는 것은 아닙니다.
+NITROS는 NVIDIA CUDA 메모리 그래프에 최적화되어 있지만 DEEPX NPU buffer와 자동 zero-copy가 되는 것은 아니다.
 
 ### 1차 구현
 
@@ -93,9 +93,9 @@ NitrosImage or sensor_msgs/Image
 
 ### 최적화 구현
 
-DX-Runtime과 플랫폼 드라이버가 DMA-BUF 또는 외부 buffer import를 공식 지원하는 경우에만 copy reduction을 적용합니다. “NITROS zero-copy”라는 이유만으로 CUDA pointer를 NPU에 직접 넘겨서는 안 됩니다.
+DX-Runtime과 플랫폼 드라이버가 DMA-BUF 또는 외부 buffer import를 공식 지원하는 경우에만 copy reduction을 적용한다. “NITROS zero-copy”라는 이유만으로 CUDA pointer를 NPU에 직접 넘겨서는 안 된다.
 
-## 5. 제안 패키지 구성
+## 5. 패키지 구성 초안
 
 ```text
 dx_newton_optflow/
@@ -110,7 +110,7 @@ dx_newton_optflow/
 └── test/
 ```
 
-## 6. 제안 노드
+## 6. 노드 구성 초안
 
 | 노드 | 실행 장치 | 기능 |
 |---|---|---|
@@ -124,7 +124,7 @@ dx_newton_optflow/
 | `RectifyNode`/`ResizeNode`/`ImageFormatConverterNode` | Isaac ROS | upstream 전처리 |
 | `VisualSlamNode` 또는 custom VO | Isaac ROS/downstream | flow/tracks를 odometry 또는 검증에 활용 |
 
-초기 구현에서는 frame pair와 NPU inference를 하나의 composable node에 넣을 수 있지만, 인터페이스와 측정 지점을 명확히 하기 위해 논리적으로는 위와 같이 분리합니다.
+초기 구현에서는 frame pair와 NPU inference를 하나의 composable node에 넣을 수 있지만, 인터페이스와 측정 지점을 명확히 하기 위해 논리적으로는 위와 같이 분리한다.
 
 ## 7. ROS 메시지 계약
 
@@ -163,7 +163,7 @@ TrackedPoint:
   uint8 status
 ```
 
-두 영상의 timestamp가 모두 필요하므로 output header에는 현재 프레임 timestamp를 두고 `previous_stamp`를 별도 보존합니다.
+두 영상의 timestamp가 모두 필요하므로 output header에는 현재 프레임 timestamp를 두고 `previous_stamp`를 별도 보존한다.
 
 ## 8. 메시지와 노드 흐름
 
@@ -197,7 +197,7 @@ flowchart LR
     G --> H["ROS Image 32FC2"]
 ```
 
-## 9. State diagram
+## 9. 상태 다이어그램
 
 ```mermaid
 stateDiagram-v2
@@ -229,14 +229,14 @@ stateDiagram-v2
 
 ### 해상도 복원
 
-모델 입력이 \(W_m \times H_m\), 원본이 \(W_o \times H_o\)이면 upsample 후 vector 크기도 보정합니다.
+모델 입력이 \(W_m \times H_m\), 원본이 \(W_o \times H_o\)이면 upsample 후 vector 크기도 보정한다.
 
 $$
 u_o=u_m\frac{W_o}{W_m},\qquad
 v_o=v_m\frac{H_o}{H_m}
 $$
 
-flow map만 resize하고 \(u,v\) 크기를 보정하지 않으면 이동량이 잘못됩니다.
+flow map만 resize하고 \(u,v\) 크기를 보정하지 않으면 이동량이 잘못된다.
 
 ### Frame gap
 
@@ -252,7 +252,7 @@ flow map만 resize하고 \(u,v\) 크기를 보정하지 않으면 이동량이 �
 - 입력/출력 timestamp, dropped count, queue wait를 모두 기록
 - latency를 낮추기 위해 오래된 pair를 순차 처리하지 않음
 
-## 11. Downstream 활용
+## 11. 후속 노드 활용
 
 | 소비자 | 입력 | 활용 |
 |---|---|---|
@@ -263,7 +263,7 @@ flow map만 resize하고 \(u,v\) 크기를 보정하지 않으면 이동량이 �
 | Visual SLAM evaluator | flow/tracks vs cuVSLAM observations | feature tracking 비교 |
 | Robot controller | aggregated flow | reactive avoidance 또는 visual servoing |
 
-Isaac ROS Visual SLAM은 자체 feature tracking을 사용하므로, 이 optical flow를 내부에 바로 주입할 수 있다고 가정해서는 안 됩니다. 첫 단계에서는 별도 downstream VO 노드 또는 비교/진단 입력으로 사용하고, cuVSLAM이 공식 external-flow interface를 제공하는 경우에만 직접 통합합니다.
+Isaac ROS Visual SLAM은 자체 feature tracking을 사용하므로, 이 optical flow를 내부에 바로 주입할 수 있다고 가정해서는 안 된다. 첫 단계에서는 별도 downstream VO 노드 또는 비교/진단 입력으로 사용하고, cuVSLAM이 공식 external-flow interface를 제공하는 경우에만 직접 통합한다.
 
 ## 12. 성능평가
 
@@ -294,7 +294,7 @@ Isaac ROS Visual SLAM은 자체 feature tracking을 사용하므로, 이 optical
 4. INT8 DEEPX DXNN
 5. 필요 시 기존 GPU optical-flow baseline
 
-정확도 비교는 같은 resize, crop, frame pair, valid mask를 사용해야 하며 sparse LK와 dense flow는 공통 valid points 또는 downstream metric으로 비교합니다.
+정확도 비교는 같은 resize, crop, frame pair, valid mask를 사용해야 하며 sparse LK와 dense flow는 공통 valid points 또는 downstream metric으로 비교한다.
 
 ## 13. 구현 순서
 
@@ -309,7 +309,7 @@ Isaac ROS Visual SLAM은 자체 feature tracking을 사용하므로, 이 optical
 9. NITROS/ROS adapter 및 copy profiling
 10. accuracy–latency–power benchmark와 downstream VO 평가
 
-## References
+## 참고 자료
 
 - [NVIDIA Isaac ROS Image Pipeline](https://nvidia-isaac-ros.github.io/repositories_and_packages/isaac_ros_image_pipeline/index.html)
 - [NVIDIA Isaac ROS NITROS](https://nvidia-isaac-ros.github.io/repositories_and_packages/isaac_ros_nitros/index.html)
