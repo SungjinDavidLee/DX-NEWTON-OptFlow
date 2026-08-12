@@ -79,7 +79,7 @@ Output
 
 ## 4. 중요한 메모리 설계
 
-NITROS (zero-copy) 에 기반하여 설계한다.
+NITROS (zero-copy) 에 기반하여 설계.
 
 ### 1차 구현
 
